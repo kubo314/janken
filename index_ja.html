@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>✊✌️🖐️じゃんけん✊✌️🖐️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <meta name="viewport" content="user-scalable=no">
+    <!--<meta http-equiv="refresh" content="2">-->
+</head>
+<body>
+    <p>2回前の手</p>
+    <div class="second_last">
+        <button class="icon">
+            <img src="./svg/rock.svg" alt="">
+            グー
+        </button>
+        <button class="icon">
+            <img src="./svg/scissors.svg" alt="">
+            チョキ
+        </button>
+        <button class="icon">
+            <img src="./svg/paper.svg" alt="">
+            パー
+        </button>
+    </div>
+    <p style="margin-top: 20px;">1回前の手</p>
+    <div class="last">
+        <button class="icon">
+            <img src="./svg/rock.svg" alt="">
+            グー
+        </button>
+        <button class="icon">
+            <img src="./svg/scissors.svg" alt="">
+            チョキ
+        </button>
+        <button class="icon">
+            <img src="./svg/paper.svg" alt="">
+            パー
+        </button>
+    </div>
+    <div class="button_box">
+        <button class="calculation">計算</button>
+    </div>
+    <p style="font-size: 40px;">それぞれの手の次に出る確率</p>
+    <table>
+        <tr>
+            <td>グー</td>
+            <td class="count">-</td>
+        </tr>
+        <tr>
+            <td>チョキ</td>
+            <td class="count">-</td>
+        </tr>
+        <tr>
+            <td>パー</td>
+            <td class="count">-</td>
+        </tr>
+    </table>
+    <script>
+        const janken_data = [1, 1, 2, 1, 1, 0, 1, 1, 2, 1, 0, 2, 0, 0, 0, 2, 2, 1, 1, 1, 2, 1, 2, 1, 2, 1, 2, 0, 0, 1, 0, 2, 1, 1, 2, 1, 1, 1, 0, 2, 1, 1, 2, 1, 0, 2, 0, 2, 1, 1, 1, 1, 0, 2, 0, 1, 0, 1, 1, 2, 0, 0]
+
+        const janken_data_str = janken_data.join("")
+
+        let serach_str = "";
+        document.querySelectorAll(".icon").forEach(function(element) {
+            element.addEventListener("touchstart", function() {
+                element.parentNode.querySelectorAll(".selected").forEach(function (selected) {
+                    selected.classList.remove("selected");
+                })
+                element.classList.add("selected")
+            });
+        });
+
+        let counts = [];
+        document.querySelector(".calculation").addEventListener("touchstart", function () {
+            const selecteds = document.querySelectorAll(".selected");
+            const icons = document.querySelectorAll(".icon");
+            if (selecteds.length > 1) {
+                const second_last = [].slice.call(icons).indexOf(selecteds[0]);
+                const last = [].slice.call(icons).indexOf(selecteds[1]) - 3;
+                serach_str = String(second_last) + String(last);
+
+                for (let i = 0; i < 3; i++) {
+                    match_result = janken_data_str.match(new RegExp(serach_str + String(i), "g"));
+                    if (match_result !== null) {
+                        counts[i] = match_result.length;
+                    } else {
+                        counts[i] = 0
+                    }
+                }
+                const total = counts.reduce(function(sum, element){
+                    return sum + element;
+                }, 0);
+                let j = 0;
+                for(count of counts) {
+                    document.querySelectorAll(".count")[j].textContent = `${Math.round((count / total) * 100 * 100) / 100}%`;
+                    j ++;
+                }
+            }
+        })
+            
+    </script>
+</body>
+</html>
